@@ -7,7 +7,7 @@ on:
 
 jobs:
   render-avatar:
-    runs-on: ubuntu-20.04  # Use 20.04 for compatibility with torch 1.12.1
+    runs-on: ubuntu-latest  # Use 20.04 for compatibility with torch 1.12.1
 
     steps:
     - name: Checkout repo
