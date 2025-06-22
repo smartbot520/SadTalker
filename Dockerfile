@@ -35,4 +35,4 @@ RUN mkdir -p checkpoints && \
     gdown --id 1yM7yN9hb6Eyu-IsETkK7h-KvzIPdsARE -O checkpoints/mapping_00229-model.pth.tar && \
     gdown --id 1O3M7lXtX8EJ2T7dzEyMBcMINRcCm8Dow -O checkpoints/SadTalker_V0.0.2_256.safetensors
 
-CMD ["python", "inference.py", "--driven_audio", "telugu_audio.wav", "--source_image", "myavatar.jpg", "--enhancer", "gfpgan", "--result_dir", "results/"]
+CMD ["python", "inference.py", "--driven_audio", "telugu_audio_shorts.wav", "--source_image", "myavatar.jpg", "--enhancer", "gfpgan", "--result_dir", "results/"]
