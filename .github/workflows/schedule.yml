@@ -2,26 +2,35 @@ name: Daily Avatar Rendering
 
 on:
   schedule:
-    - cron: '0 4 * * *'  # every day at 2:00 AM UTC
-  workflow_dispatch:
+    - cron: '0 2 * * *'  # Runs daily at 2:00 AM UTC
+  workflow_dispatch:      # Allows manual run from Actions tab
 
 jobs:
   render-avatar:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-20.04  # Use 20.04 for compatibility with torch 1.12.1
 
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.11
+    - name: Set up Docker Buildx (optional but good practice)
+      uses: docker/setup-buildx-action@v3
 
-    - name: Install dependencies
+    - name: Build Docker image
       run: |
-        pip install -r requirements.txt
+        docker build -t sadtalker-render .
 
-    - name: Run avatar generation
+    - name: Create results directory
+      run: mkdir -p results
+
+    - name: Run inference inside Docker
       run: |
+        docker run --rm -v ${{ github.workspace }}/results:/app/results \
+        sadtalker-render \
         python inference.py --driven_audio telugu_audio.wav --source_image myavatar.jpg --enhancer gfpgan --result_dir results/
+
+    - name: Upload result video
+      uses: actions/upload-artifact@v4
+      with:
+        name: final-video
+        path: results/
