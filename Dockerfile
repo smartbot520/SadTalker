@@ -9,19 +9,24 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y \
     python3.10 python3.10-dev python3.10-distutils \
-    ffmpeg git curl wget unzip libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 \
-    && rm -rf /var/lib/apt/lists/*
+    ffmpeg git curl wget unzip libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install pip
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
 
-# Install pip packages including gdown and torch
+# Set python and pip aliases
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1 && \
+    update-alternatives --install /usr/bin/pip pip /usr/local/bin/pip 1
+
+# Copy code to container
+WORKDIR /app
+COPY . .
+
+# Install torch, gdown, and project requirements
 RUN pip install torch==1.12.1 torchvision==0.13.1 --extra-index-url https://download.pytorch.org/whl/cpu
 RUN pip install gdown
 RUN pip install -r requirements.txt
-
-WORKDIR /app
-COPY . .
 
 # Create checkpoints folder and download files
 RUN mkdir -p checkpoints && \
